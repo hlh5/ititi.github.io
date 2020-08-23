@@ -22,13 +22,13 @@
 
   <meta name="description" content="一、部署openvpn部署在ssl.itiit.com（IP地址或域名）, 数据保存目录为&#x2F;data,使用docker-compose编排容器。 1.安装docker docker-compose(略)2.生产openvpn配置文件如果有修改ovpn_env.sh文件，需要重新执行此步骤生成新的配置文件，然后重启服务才能生效。 1docker run -v &#x2F;data&#x2F;ovpn">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ITIIT">
+<meta property="og:title" content="openvpn install">
 <meta property="og:url" content="http://yoursite.com/2020/08/23/openvpn%20%E5%AE%B9%E5%99%A8%E9%83%A8%E7%BD%B2/index.html">
 <meta property="og:site_name" content="ITIIT">
 <meta property="og:description" content="一、部署openvpn部署在ssl.itiit.com（IP地址或域名）, 数据保存目录为&#x2F;data,使用docker-compose编排容器。 1.安装docker docker-compose(略)2.生产openvpn配置文件如果有修改ovpn_env.sh文件，需要重新执行此步骤生成新的配置文件，然后重启服务才能生效。 1docker run -v &#x2F;data&#x2F;ovpn">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-08-23T02:45:16.209Z">
-<meta property="article:modified_time" content="2020-08-23T02:44:49.000Z">
+<meta property="article:published_time" content="2020-08-23T02:53:07.070Z">
+<meta property="article:modified_time" content="2020-08-23T02:53:07.062Z">
 <meta property="article:author" content="itiit">
 <meta property="article:tag" content="dba">
 <meta name="twitter:card" content="summary">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title> | ITIIT</title>
+  <title>openvpn install | ITIIT</title>
   
 
 
@@ -165,7 +165,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          openvpn install
         </h1>
 
         <div class="post-meta">
@@ -174,9 +174,8 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-08-23 10:45:16 / 修改时间：10:44:49" itemprop="dateCreated datePublished" datetime="2020-08-23T10:45:16+08:00">2020-08-23</time>
+              <time title="创建时间：2020-08-23 10:53:07" itemprop="dateCreated datePublished" datetime="2020-08-23T10:53:07+08:00">2020-08-23</time>
             </span>
 
           
@@ -213,6 +212,7 @@
 <h2 id="9-吊销用户并删除证书"><a href="#9-吊销用户并删除证书" class="headerlink" title="9.吊销用户并删除证书"></a>9.吊销用户并删除证书</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -it -v &#x2F;data&#x2F;ovpn_data:&#x2F;etc&#x2F;openvpn kylemanna&#x2F;openvpn ovpn_revokeclient ititi remove</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h2 id="10-OpenVPN-Server-云主机网络设置"><a href="#10-OpenVPN-Server-云主机网络设置" class="headerlink" title="10. OpenVPN Server 云主机网络设置"></a>10. OpenVPN Server 云主机网络设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">开启内核转发</span><br><span class="line"># vi &#x2F;etc&#x2F;sysctl.conf</span><br><span class="line">net.ipv4.ip_forward &#x3D; 1</span><br><span class="line"># sysctl -p</span><br><span class="line"></span><br><span class="line">保证vpn地址池可路由出外网(为客户端分配172.30.0.0&#x2F;24网段ip)</span><br><span class="line">iptables -t nat -A POSTROUTING -s 172.30.0.0&#x2F;24 -o eth0 -j MASQUERADE</span><br><span class="line"></span><br><span class="line">设置openvpn服务端口通过</span><br><span class="line">iptables -A INPUT -p TCP --dport 1194 -j ACCEPT</span><br><span class="line">iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</span><br><span class="line"></span><br><span class="line">注：腾讯云不用设置，请在安全组中开放1194端口</span><br></pre></td></tr></table></figure>
+
     </div>
 
     
