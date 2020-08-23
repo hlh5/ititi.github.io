@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一、部署openvpn部署在ssl.itiit.com（IP地址或域名）, 数据保存目录为&#x2F;data,使用docker-compose编排容器。 1.安装docker docker-compose(略)2.生产openvpn配置文件如果有修改ovpn_env.sh文件，需要重新执行此步骤生成新的配置文件，然后重启服务才能生效。 1docker run -v &#x2F;data&#x2F;ovpn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ITIIT">
+<meta property="og:url" content="http://yoursite.com/2020/08/23/openvpn%20%E5%AE%B9%E5%99%A8%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="ITIIT">
+<meta property="og:description" content="一、部署openvpn部署在ssl.itiit.com（IP地址或域名）, 数据保存目录为&#x2F;data,使用docker-compose编排容器。 1.安装docker docker-compose(略)2.生产openvpn配置文件如果有修改ovpn_env.sh文件，需要重新执行此步骤生成新的配置文件，然后重启服务才能生效。 1docker run -v &#x2F;data&#x2F;ovpn">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-23T02:45:16.209Z">
+<meta property="article:modified_time" content="2020-08-23T02:44:49.000Z">
+<meta property="article:author" content="itiit">
+<meta property="article:tag" content="dba">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/08/23/openvpn%20%E5%AE%B9%E5%99%A8%E9%83%A8%E7%BD%B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | ITIIT</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">ITIIT</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">LH技术思考录</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/23/openvpn%20%E5%AE%B9%E5%99%A8%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="itiit">
+      <meta itemprop="description" content="数据数据数据,我被淹没在数据中">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ITIIT">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-23 10:45:16 / 修改时间：10:44:49" itemprop="dateCreated datePublished" datetime="2020-08-23T10:45:16+08:00">2020-08-23</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="一、部署"><a href="#一、部署" class="headerlink" title="一、部署"></a>一、部署</h1><p>openvpn部署在ssl.itiit.com（IP地址或域名）, 数据保存目录为/data,使用docker-compose编排容器。</p>
+<h2 id="1-安装docker-docker-compose-略"><a href="#1-安装docker-docker-compose-略" class="headerlink" title="1.安装docker docker-compose(略)"></a>1.安装docker docker-compose(略)</h2><h2 id="2-生产openvpn配置文件"><a href="#2-生产openvpn配置文件" class="headerlink" title="2.生产openvpn配置文件"></a>2.生产openvpn配置文件</h2><p>如果有修改ovpn_env.sh文件，需要重新执行此步骤生成新的配置文件，然后重启服务才能生效。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -v &#x2F;data&#x2F;ovpn_data:&#x2F;etc&#x2F;openvpn --rm kylemanna&#x2F;openvpn ovpn_genconfig -u tcp:&#x2F;&#x2F;ssl.itiit.com</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-初始化pki，生成ca证书、服务器证书、key"><a href="#3-初始化pki，生成ca证书、服务器证书、key" class="headerlink" title="3.初始化pki，生成ca证书、服务器证书、key"></a>3.初始化pki，生成ca证书、服务器证书、key</h2><p>首次部署VPN时需执行此操作，用于生成生成ca证书、服务器证书、key等文件。<br>部署完后不要在执行此操作，会有覆盖原有的证书风险。<br>执行此步骤会提示需要输入密码，用来加密证书。<br>生产的密码为：itiit</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -v &#x2F;data&#x2F;ovpn_data:&#x2F;etc&#x2F;openvpn --rm -it kylemanna&#x2F;openvpn ovpn_initpki</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-运行openvpn"><a href="#4-运行openvpn" class="headerlink" title="4.运行openvpn"></a>4.运行openvpn</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">root@ssh-inl-openvpn181:~# cat &#x2F;data&#x2F;docker-compose.yml </span><br><span class="line">version: &#39;2&#39;</span><br><span class="line">services:</span><br><span class="line">  openvpn:</span><br><span class="line">    image: kylemanna&#x2F;openvpn:latest</span><br><span class="line">    container_name: openvpn</span><br><span class="line">    restart: always</span><br><span class="line">    network_mode: host</span><br><span class="line">    privileged: true</span><br><span class="line">    environment:</span><br><span class="line">      #- TZ&#x3D;Asia&#x2F;Shanghai</span><br><span class="line">      - SET_CONTAINER_TIMEZONE&#x3D;true</span><br><span class="line">      - CONTAINER_TIMEZONE&#x3D;Asia&#x2F;Shanghai</span><br><span class="line">    volumes:</span><br><span class="line">      - &#x2F;etc&#x2F;localtime:&#x2F;etc&#x2F;localtime</span><br><span class="line">      - &#x2F;data&#x2F;ovpn_data:&#x2F;etc&#x2F;openvpn</span><br></pre></td></tr></table></figure>
+<h2 id="5-生成用户配置信息"><a href="#5-生成用户配置信息" class="headerlink" title="5.生成用户配置信息"></a>5.生成用户配置信息</h2><p>此步骤会生成用户的证书和key，生成过程中需要输入第3步中的密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -v &#x2F;data&#x2F;ovpn_data:&#x2F;etc&#x2F;openvpn --rm -it kylemanna&#x2F;openvpn easyrsa build-client-full ititi nopass</span><br></pre></td></tr></table></figure>
+<h2 id="6-导出用户配置"><a href="#6-导出用户配置" class="headerlink" title="6.导出用户配置"></a>6.导出用户配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -v &#x2F;data&#x2F;ovpn_data:&#x2F;etc&#x2F;openvpn --rm kylemanna&#x2F;openvpn ovpn_getclient ititi&gt;ititi.ovpn</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-为用户配置固定IP"><a href="#7-为用户配置固定IP" class="headerlink" title="7.为用户配置固定IP"></a>7.为用户配置固定IP</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;ifconfig-push 172.30.0.5 172.30.0.6&quot; | docker run -v &#x2F;data&#x2F;ovpn_data:&#x2F;etc&#x2F;openvpn -i --rm kylemanna&#x2F;openvpn tee &#x2F;etc&#x2F;openvpn&#x2F;ccd&#x2F;ititi</span><br></pre></td></tr></table></figure>
+
+<p>用户的互联IP必须为30位的网段。<br>以下为可用的IP:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[  1,  2] [  5,  6] [  9, 10] [ 13, 14] [ 17, 18]</span><br><span class="line">[ 21, 22] [ 25, 26] [ 29, 30] [ 33, 34] [ 37, 38]</span><br><span class="line">[ 41, 42] [ 45, 46] [ 49, 50] [ 53, 54] [ 57, 58]</span><br><span class="line">[ 61, 62] [ 65, 66] [ 69, 70] [ 73, 74] [ 77, 78]</span><br><span class="line">[ 81, 82] [ 85, 86] [ 89, 90] [ 93, 94] [ 97, 98]</span><br><span class="line">[101,102] [105,106] [109,110] [113,114] [117,118]</span><br><span class="line">[121,122] [125,126] [129,130] [133,134] [137,138]</span><br><span class="line">[141,142] [145,146] [149,150] [153,154] [157,158]</span><br><span class="line">[161,162] [165,166] [169,170] [173,174] [177,178]</span><br><span class="line">[181,182] [185,186] [189,190] [193,194] [197,198]</span><br><span class="line">[201,202] [205,206] [209,210] [213,214] [217,218]</span><br><span class="line">[221,222] [225,226] [229,230] [233,234] [237,238]</span><br><span class="line">[241,242] [245,246] [249,250] [253,254]</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-查看目前有哪些用户"><a href="#8-查看目前有哪些用户" class="headerlink" title="8.查看目前有哪些用户"></a>8.查看目前有哪些用户</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -it -v &#x2F;data&#x2F;ovpn_data:&#x2F;etc&#x2F;openvpn kylemanna&#x2F;openvpn ovpn_listclients</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="9-吊销用户并删除证书"><a href="#9-吊销用户并删除证书" class="headerlink" title="9.吊销用户并删除证书"></a>9.吊销用户并删除证书</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run --rm -it -v &#x2F;data&#x2F;ovpn_data:&#x2F;etc&#x2F;openvpn kylemanna&#x2F;openvpn ovpn_revokeclient ititi remove</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="10-OpenVPN-Server-云主机网络设置"><a href="#10-OpenVPN-Server-云主机网络设置" class="headerlink" title="10. OpenVPN Server 云主机网络设置"></a>10. OpenVPN Server 云主机网络设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">开启内核转发</span><br><span class="line"># vi &#x2F;etc&#x2F;sysctl.conf</span><br><span class="line">net.ipv4.ip_forward &#x3D; 1</span><br><span class="line"># sysctl -p</span><br><span class="line"></span><br><span class="line">保证vpn地址池可路由出外网(为客户端分配172.30.0.0&#x2F;24网段ip)</span><br><span class="line">iptables -t nat -A POSTROUTING -s 172.30.0.0&#x2F;24 -o eth0 -j MASQUERADE</span><br><span class="line"></span><br><span class="line">设置openvpn服务端口通过</span><br><span class="line">iptables -A INPUT -p TCP --dport 1194 -j ACCEPT</span><br><span class="line">iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</span><br><span class="line"></span><br><span class="line">注：腾讯云不用设置，请在安全组中开放1194端口</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/22/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E9%83%A8%E7%BD%B2"><span class="nav-number">1.</span> <span class="nav-text">一、部署</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85docker-docker-compose-%E7%95%A5"><span class="nav-number">1.1.</span> <span class="nav-text">1.安装docker docker-compose(略)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%94%9F%E4%BA%A7openvpn%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">2.生产openvpn配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%88%9D%E5%A7%8B%E5%8C%96pki%EF%BC%8C%E7%94%9F%E6%88%90ca%E8%AF%81%E4%B9%A6%E3%80%81%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AF%81%E4%B9%A6%E3%80%81key"><span class="nav-number">1.3.</span> <span class="nav-text">3.初始化pki，生成ca证书、服务器证书、key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E8%BF%90%E8%A1%8Copenvpn"><span class="nav-number">1.4.</span> <span class="nav-text">4.运行openvpn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E7%94%9F%E6%88%90%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">1.5.</span> <span class="nav-text">5.生成用户配置信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%AF%BC%E5%87%BA%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE"><span class="nav-number">1.6.</span> <span class="nav-text">6.导出用户配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E4%B8%BA%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE%E5%9B%BA%E5%AE%9AIP"><span class="nav-number">1.7.</span> <span class="nav-text">7.为用户配置固定IP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E6%9F%A5%E7%9C%8B%E7%9B%AE%E5%89%8D%E6%9C%89%E5%93%AA%E4%BA%9B%E7%94%A8%E6%88%B7"><span class="nav-number">1.8.</span> <span class="nav-text">8.查看目前有哪些用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E5%90%8A%E9%94%80%E7%94%A8%E6%88%B7%E5%B9%B6%E5%88%A0%E9%99%A4%E8%AF%81%E4%B9%A6"><span class="nav-number">1.9.</span> <span class="nav-text">9.吊销用户并删除证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-OpenVPN-Server-%E4%BA%91%E4%B8%BB%E6%9C%BA%E7%BD%91%E7%BB%9C%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.10.</span> <span class="nav-text">10. OpenVPN Server 云主机网络设置</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">itiit</p>
+  <div class="site-description" itemprop="description">数据数据数据,我被淹没在数据中</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">itiit</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
