@@ -20,31 +20,33 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="数据数据数据,我被淹没在数据中">
-<meta property="og:type" content="website">
-<meta property="og:title" content="ITIIT">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="一、启动bin-log日志在my.cnf [mysqld]节点添加： 12log-bin&#x3D;mysql-binbinlog_format&#x3D;mixed 二、查看bin-log是否启动成功show variables like ‘%log_bin%’;Variable_name    Valuelog_bin    ON 三、查看mysql-bin.000001文件所在位置show">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql-binlog数据恢复">
+<meta property="og:url" content="http://yoursite.com/2020/08/23/mysql-binlog%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/index.html">
 <meta property="og:site_name" content="ITIIT">
-<meta property="og:description" content="数据数据数据,我被淹没在数据中">
+<meta property="og:description" content="一、启动bin-log日志在my.cnf [mysqld]节点添加： 12log-bin&#x3D;mysql-binbinlog_format&#x3D;mixed 二、查看bin-log是否启动成功show variables like ‘%log_bin%’;Variable_name    Valuelog_bin    ON 三、查看mysql-bin.000001文件所在位置show">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-23T05:01:14.345Z">
+<meta property="article:modified_time" content="2020-08-23T05:01:14.339Z">
 <meta property="article:author" content="itiit">
 <meta property="article:tag" content="dba">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/">
+<link rel="canonical" href="http://yoursite.com/2020/08/23/mysql-binlog%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>ITIIT</title>
+  <title>mysql-binlog数据恢复 | ITIIT</title>
   
 
 
@@ -143,9 +145,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -161,10 +164,9 @@
       <meta itemprop="name" content="ITIIT">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/23/mysql-binlog%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/" class="post-title-link" itemprop="url">mysql-binlog数据恢复</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          mysql-binlog数据恢复
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -187,7 +189,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="一、启动bin-log日志"><a href="#一、启动bin-log日志" class="headerlink" title="一、启动bin-log日志"></a>一、启动bin-log日志</h1><p>在my.cnf [mysqld]节点添加：</p>
+        <h1 id="一、启动bin-log日志"><a href="#一、启动bin-log日志" class="headerlink" title="一、启动bin-log日志"></a>一、启动bin-log日志</h1><p>在my.cnf [mysqld]节点添加：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">log-bin&#x3D;mysql-bin</span><br><span class="line">binlog_format&#x3D;mixed</span><br></pre></td></tr></table></figure>
 <h1 id="二、查看bin-log是否启动成功"><a href="#二、查看bin-log是否启动成功" class="headerlink" title="二、查看bin-log是否启动成功"></a>二、查看bin-log是否启动成功</h1><p>show variables like ‘%log_bin%’;<br>Variable_name    Value<br>log_bin    ON</p>
 <h1 id="三、查看mysql-bin-000001文件所在位置"><a href="#三、查看mysql-bin-000001文件所在位置" class="headerlink" title="三、查看mysql-bin.000001文件所在位置"></a>三、查看mysql-bin.000001文件所在位置</h1><p>show variables like ‘%datadir%’;<br>Variable_name    Value<br>datadir    /var/lib/mysql/</p>
@@ -202,91 +204,30 @@
 <h1 id="八、数据恢复原理"><a href="#八、数据恢复原理" class="headerlink" title="八、数据恢复原理"></a>八、数据恢复原理</h1><p>恢复上一次备份<br>找到上一次数据备份对应的binlog文件及其position，从该位置恢复到删表操作前的位置，也就是说，恢复文件并不一定是mysql-bin.000001<br>如果没有上一次备份，使用类似mysqlbinlog /var/lib/mysql/mysql-bin.000001 –start-position=0 –stop-position=9999999999999 | mysql -uroot -pxxxx 从第一个bin-log日志文件，逐步恢复到删表操作前的位置</p>
 <p>–stop-position=9999999999999设置成接近无限大是为了无视文件的结束位置，方便操作</p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/22/hello-world/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="itiit">
-      <meta itemprop="description" content="数据数据数据,我被淹没在数据中">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ITIIT">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/22/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-08-22 22:19:29" itemprop="dateCreated datePublished" datetime="2020-08-22T22:19:29+08:00">2020-08-22</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/22/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -339,6 +280,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%90%AF%E5%8A%A8bin-log%E6%97%A5%E5%BF%97"><span class="nav-number">1.</span> <span class="nav-text">一、启动bin-log日志</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%9F%A5%E7%9C%8Bbin-log%E6%98%AF%E5%90%A6%E5%90%AF%E5%8A%A8%E6%88%90%E5%8A%9F"><span class="nav-number">2.</span> <span class="nav-text">二、查看bin-log是否启动成功</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%9F%A5%E7%9C%8Bmysql-bin-000001%E6%96%87%E4%BB%B6%E6%89%80%E5%9C%A8%E4%BD%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">三、查看mysql-bin.000001文件所在位置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%9F%BA%E4%BA%8Esql%E6%9F%A5%E8%AF%A2%E6%9F%A5%E7%9C%8Bbin-log%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">4.</span> <span class="nav-text">四、基于sql查询查看bin-log文件中的内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E5%9F%BA%E4%BA%8Emysqlbinlog%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8Bbin-log%E6%96%87%E4%BB%B6%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-number">5.</span> <span class="nav-text">五、基于mysqlbinlog命令查看bin-log文件的内容</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E6%97%A5%E5%BF%97%E6%98%BE%E7%A4%BA%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">六、日志显示参考</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5sql%E7%BB%93%E6%9E%9C%E5%88%B0sql%E6%96%87%E4%BB%B6"><span class="nav-number">6.1.</span> <span class="nav-text">导入sql结果到sql文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E7%AE%A1%E9%81%93%E6%96%B9%E5%BC%8F%E7%9B%B4%E6%8E%A5%E8%BF%90%E8%A1%8C%EF%BC%88%E5%9F%BA%E4%BA%8E%E4%BD%8D%E7%BD%AE%EF%BC%89"><span class="nav-number">6.2.</span> <span class="nav-text">通过管道方式直接运行（基于位置）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E7%AE%A1%E9%81%93%E6%96%B9%E5%BC%8F%E7%9B%B4%E6%8E%A5%E8%BF%90%E8%A1%8C%EF%BC%88%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%EF%BC%89"><span class="nav-number">6.3.</span> <span class="nav-text">通过管道方式直接运行（基于时间）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D%E5%8E%9F%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">八、数据恢复原理</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
